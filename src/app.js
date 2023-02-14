@@ -42,7 +42,7 @@ const app = express()
 
 // Settings
 
-app.set('port', process.env.PORT || 3000)
+app.set('port', 3050)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Middlewares
