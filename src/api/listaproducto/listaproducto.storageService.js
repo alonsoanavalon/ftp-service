@@ -76,7 +76,11 @@ exports.insertOrUpdate = (id, producto_id, listasubmodelo_id) => {
         try {
             const sql = `INSERT INTO listaproducto (id, producto_id, listasubmodelo_id) VALUES('${id}', '${producto_id}', ${listasubmodelo_id}) ON DUPLICATE KEY UPDATE producto_id='${producto_id}', listasubmodelo_id=${listasubmodelo_id};`
             mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
+                if (err) {
+                    console.error(`
+                    ${err.code}
+                    ${err.sql}`)
+                }
                 resolve(result)
             })
         } catch (err) {

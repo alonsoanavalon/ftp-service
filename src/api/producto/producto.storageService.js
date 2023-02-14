@@ -175,11 +175,16 @@ exports.substractStock = (quantity, id) => {
 }
 
 exports.insertOrUpdate = (id, nombre, precio, cantidad, precio_local, descripcion, estado) => {
+    
     return new Promise((resolve, reject) => {
         try {
             const sql = `INSERT INTO producto (id, codigo, SKU, nombre, precio, cantidad, precio_local, descripcion, estado) VALUES('${id}','${id}','${id}','${nombre}',${precio}, ${cantidad}, ${precio_local}, '${descripcion}', '${estado}') ON DUPLICATE KEY UPDATE codigo='${id}',SKU='${id}', nombre='${nombre}', precio=${precio}, cantidad =${cantidad}, precio_local =${precio_local}, descripcion = '${descripcion}', estado = '${estado}';`
             mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
+                if (err) {
+                    console.error(`
+                    ${err.code}
+                    ${err.sql}`)
+                }
                 resolve(result)
             })
         } catch (err) {

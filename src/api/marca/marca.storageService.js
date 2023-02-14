@@ -56,7 +56,11 @@ exports.insertOrUpdate = (id, nombre) => {
         try {
             const sql = `INSERT INTO marca (id, nombre) VALUES(${id}, '${nombre}') ON DUPLICATE KEY UPDATE nombre='${nombre}'`;
             mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
+                if (err) {
+                    console.error(`
+                    ${err.code}
+                    ${err.sql}`)
+                }
                 resolve(result)
             })
         } catch (err) {

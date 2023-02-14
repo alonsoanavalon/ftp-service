@@ -43,7 +43,7 @@ async function readGeneCodi () {
       console.log("reading genecodi...")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/GENECODI.txt', function(line, last) {        
+       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/GENECODI1.txt', function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -73,8 +73,15 @@ async function readGeneCodi () {
                 const idListaSubmodelo = `${idMarca}${idModelo}${idSubmodelo}${idAnoFab}`;
                 const id = `${objeto['Codigo']}${idListaSubmodelo}`;
                 const idProducto = objeto['Codigo']
+                if (id) {
+                  resolve(listaproductoService.insertOrUpdate(id, idProducto, idListaSubmodelo));
+                } else {
+                  console.log(`message: "No existe un id para agregar"`)
+                  return {
+                    message: "No existe un id para agregar"
+                  }
+                }
                 
-                resolve(listaproductoService.insertOrUpdate(id, idProducto, idListaSubmodelo));
               })
               
             }
@@ -122,11 +129,22 @@ async function readProducto () {
           //los get a la base de datos, que me traiga los que tengan X cantidad y además que cumplan con que esten activos.
 
           if(last) {
-            if (arrayDeObjetosGenerados.length > 1) {
-              arrayDeObjetosGenerados.forEach((objeto) => {
+            if (arrayDeObjetosGenerados.length >= 1) {
+              arrayDeObjetosGenerados.forEach( async (objeto) => {
                 const id = objeto['Codigo'];
                 const glosa = `${objeto['Glosa 1']} ${objeto['Glosa 2']} ${objeto['Glosa 3']} ${objeto['Glosa 4']} ${objeto['Glosa 5']} ${objeto['Glosa 6']} ${objeto['Glosa 7']} ${objeto['Glosa 8']} ${objeto['Glosa 9']} ${objeto['Glosa 10']} `
-                resolve(productoService.insertOrUpdate(id, objeto['Descripcion'], objeto['Precio Vta.'], objeto['Stock'], objeto['Prec.Local'], glosa, objeto['Estado']))
+                if (id) {
+                  const response = await productoService.insertOrUpdate(id, objeto['Descripcion'], objeto['Precio Vta.'], objeto['Stock'], objeto['Prec.Local'], glosa, objeto['Estado Activo,Pasivo']);
+                  if (response) {
+                    resolve (response)
+                  }
+                } else {
+                  console.log(`message: "No existe un id para agregar"`)
+                  return {
+                    message: "No existe un id para agregar"
+                  }
+                }
+
               })
               
             }
@@ -151,7 +169,7 @@ async function readAnoFab () {
       console.log("reading anofab..")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/ANOFAB.txt', function(line, last) {        
+       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/ANOFAB1.txt', function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -177,8 +195,15 @@ async function readAnoFab () {
                 const idModelo = cleanZeros(objeto['Cod.Modelo'])
                 const idSubmodelo = cleanZeros(objeto['Cod.Submodelo'])
                 const idAno = cleanZeros(objeto['Ano'])
-                const id = `${idMarca}${idModelo}${idSubmodelo}${idAno}`
-                resolve(listasubmodeloService.insertOrUpdate(id, `${idMarca}${idModelo}${idSubmodelo}`, objeto['Nomb.Ano']))
+                const id = `${idMarca}${idModelo}${idSubmodelo}${idAno}`;
+                if (id) {
+                  resolve(listasubmodeloService.insertOrUpdate(id, `${idMarca}${idModelo}${idSubmodelo}`, objeto['Nomb.Ano']))
+                } else {
+                  console.log("No existe un id para agregar")
+                  return {
+                    message: "No existe un id para agregar"
+                  }
+                }
               })
               
             }
@@ -201,7 +226,7 @@ async function readSubmodelo () {
       console.log("reading submodelo...")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/SUBMODELO.txt', function(line, last) {        
+       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/SUBMODELO1.txt', function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -228,7 +253,14 @@ async function readSubmodelo () {
                 const idSubmodelo = cleanZeros(objeto['Cod.Submodelo'])
                 const id = `${idMarca}${idModelo}${idSubmodelo}`
                 //marcaService.insertOrUpdate(objeto['Cod.Marca'], objeto['Nomb.Marca'])
-                resolve(submodeloService.insertOrUpdate(id, `${idMarca}${idModelo}`, objeto['Nomb.Sub-Modelo']))
+                if (id) {
+                  resolve(submodeloService.insertOrUpdate(id, `${idMarca}${idModelo}`, objeto['Nomb.Sub-Modelo']))
+                } else {
+                  console.log(`message: "No existe un id para agregar"`)
+                  return {
+                    message: "No existe un id para agregar"
+                  }
+                }
               })
               
             }
@@ -253,7 +285,7 @@ return new Promise((resolve, reject) => {
     console.log("reading modelo...")
     let headers = undefined;
     let arrayDeObjetosGenerados = [];
-     lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/MODELO.txt', function(line, last) {        
+     lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/MODELO1.txt', function(line, last) {        
         if (line.length > 1) {
           if (headers === undefined) {
             //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -275,8 +307,15 @@ return new Promise((resolve, reject) => {
             arrayDeObjetosGenerados.forEach((objeto) => {
               const idMarca = cleanZeros(objeto['Cod.Marca'])
               const idModelo = cleanZeros(objeto['Cod.Modelo'])
-              const id = `${idMarca}${idModelo}`
-              resolve(modeloService.insertOrUpdate(id, objeto['Cod.Marca'], objeto['Nomb.Modelo']));
+              const id = `${idMarca}${idModelo}`;
+              if (id) {
+                resolve(modeloService.insertOrUpdate(id, objeto['Cod.Marca'], objeto['Nomb.Modelo']));
+              } else {
+                console.log(`message: "No existe un id para agregar"`)
+                return {
+                  message: "No existe un id para agregar"
+                }
+              }
             })
             
           }
@@ -302,7 +341,7 @@ async function readMarca () {
     try {
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/MARCA.txt', function(line, last) {        
+       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/MARCA1.txt', function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -322,7 +361,14 @@ async function readMarca () {
           if(last) {
             if (arrayDeObjetosGenerados.length > 1) {
               arrayDeObjetosGenerados.forEach((objeto) => {
-                resolve(marcaService.insertOrUpdate(objeto['Cod.Marca'], objeto['Nomb.Marca']))
+                if (objeto['Cod.Marca']) {
+                  resolve(marcaService.insertOrUpdate(objeto['Cod.Marca'], objeto['Nomb.Marca']))
+                } else {
+                  console.log(`message: "No existe un id para agregar"`)
+                  return {
+                    message: "No existe un id para agregar"
+                  }
+                }
               })
               
             }
@@ -429,17 +475,17 @@ const config = {
 
         //OJO que es esto lo que marca el orden en que se leerán los archivos, el sort solo se maneja bien del 1 al 9, con 2 digitos se confunde y pone al numero '22' de los segundos. Si es que se llegaran a añadir mas de 10 ficheros es probable que esto falle porque el fichero 11 va a ser el 1ero o 2ndo, y puede que haya que cargar los de entremedio para que este no tenga conflictos
 
-        if  (fileName === 'MARCA') {
+        if  (fileName === 'MARCA1') {
           object['file'] = 1;
-        } else if (fileName === 'MODELO') {
+        } else if (fileName === 'MODELO1') {
           object['file'] = 2;
-        } else if (fileName === 'SUBMODELO') {
+        } else if (fileName === 'SUBMODELO1') {
           object['file'] = 3;
-        } else if (fileName === 'ANOFAB') {
+        } else if (fileName === 'ANOFAB1') {
           object['file'] = 4;
         } else if (fileName === 'PRODUCTO') {
           object['file'] = 5;
-        } else if (fileName === 'GENECODI') {
+        } else if (fileName === 'GENECODI1') {
           object['file'] = 6;
         }
 
