@@ -1,18 +1,38 @@
-const mysqlConnection = require('../../database/database')
+const mysqlPool = require('../../database/database')
 
 
 exports.getAllListaProducto = () => {
     return new Promise((resolve, reject) => {
         try {
             const sql = 'SELECT * FROM listaproducto';
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
-                resolve(result)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
+                }
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
-            throw error;
         }
     })    
 }
@@ -21,15 +41,33 @@ exports.createListaProducto = (listaProducto) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = 'INSERT INTO listaproducto SET ?';
-            mysqlConnection.query(sql, listaProducto, (error, result) => {
-                if (error) {
-                    console.log(error.message);
-                    resolve(error)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                resolve(result)
+                try {
+                    connection.query(sql, listaProducto, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
         }
     })    
@@ -39,14 +77,34 @@ exports.getListaProductoById = (id) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `SELECT * FROM listaproducto WHERE id = ${id}`;
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
-                resolve(result)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
+                }
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
-            throw error;
         } 
     })    
 }
@@ -56,15 +114,33 @@ exports.updateListaProducto = (listaproducto) => {
         try {
             const sql = 'UPDATE listaproducto SET producto_id = ? , listasubmodelo_id = ? WHERE id = ?';
             const dataListaProducto = [listaproducto.producto_id, listaproducto.listasubmodelo_id, listaproducto.id]
-            mysqlConnection.query(sql, dataListaProducto, (error, result) => {
-                if (error) {
-                    console.log(error.message);
-                    resolve(error)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                resolve(result)
+                try {
+                    connection.query(sql, dataListaProducto, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
         }
     })    
@@ -75,18 +151,34 @@ exports.insertOrUpdate = (id, producto_id, listasubmodelo_id) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `INSERT INTO listaproducto (id, producto_id, listasubmodelo_id) VALUES('${id}', '${producto_id}', ${listasubmodelo_id}) ON DUPLICATE KEY UPDATE producto_id='${producto_id}', listasubmodelo_id=${listasubmodelo_id};`
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) {
-                    console.error(`
-                    ${err.code}
-                    ${err.sql}`)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                resolve(result)
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (err) {
-            reject(err);
+            ;
             console.error(err.message);
-            throw err;
         }
     })
 }

@@ -1,18 +1,39 @@
-const mysqlConnection = require('../../database/database')
+const mysqlPool = require('../../database/database')
 
 
 exports.getAllSubmodelo = () => {
     return new Promise((resolve, reject) => {
         try {
             const sql = 'SELECT * FROM submodelo';
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
-                resolve(result)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
+                }
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
-            throw error;
+            
         }
     })    
 }
@@ -21,15 +42,34 @@ exports.createSubmodelo = (submodelo) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = 'INSERT INTO submodelo SET ?';
-            mysqlConnection.query(sql, submodelo, (error, result) => {
-                if (error) {
-                    console.log(error.message);
-                    resolve(error)
+
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                resolve(result)
+                try {
+                    connection.query(sql, submodelo, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
         }
     })    
@@ -39,14 +79,35 @@ exports.getSubmodeloById = (id) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `SELECT * FROM submodelo WHERE id = ${id}`;
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
-                resolve(result)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
+                }
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
-            throw error;
+            
         } 
     })    
 }
@@ -56,16 +117,36 @@ exports.insertOrUpdate = (id, id_modelo, nombre) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `INSERT INTO submodelo (id, modelo_id, nombre) VALUES(${id}, ${id_modelo}, '${nombre}') ON DUPLICATE KEY UPDATE nombre='${nombre}';`;
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) {
-                    console.error(`
-                    ${err.code}
-                    ${err.sql}`)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                resolve(result)
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                        if (result) {
+                                    if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                        }
+    
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (err) {
-            reject(err);
+            ;
             console.error(err.message);
             return;
         }

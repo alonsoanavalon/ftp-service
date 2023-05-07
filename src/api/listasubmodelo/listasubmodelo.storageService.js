@@ -1,18 +1,38 @@
-const mysqlConnection = require('../../database/database')
+const mysqlPool = require('../../database/database')
 
 
 exports.getAllListaSubmodelo = () => {
     return new Promise((resolve, reject) => {
         try {
             const sql = 'SELECT * FROM listasubmodelo';
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
-                resolve(result)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
+                }
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
-            console.error(error.message)
-            throw error;
+            
+            console.error(error.message);
         }
     })    
 }
@@ -21,15 +41,33 @@ exports.createListaSubmodelo = (listaProducto) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = 'INSERT INTO listasubmodelo SET ?';
-            mysqlConnection.query(sql, listaProducto, (error, result) => {
-                if (error) {
-                    console.log(error.message);
-                    resolve(error)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                resolve(result)
+                try {
+                    connection.query(sql, listaProducto, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
         }
     })    
@@ -39,14 +77,34 @@ exports.getListaSubmodeloById = (id) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `SELECT * FROM listasubmodelo WHERE id = ${id}`;
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
-                resolve(result)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
+                }
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
-            console.error(error.message)
-            throw error;
+            
+            console.error(error.message);
         } 
     })    
 }
@@ -56,15 +114,33 @@ exports.updateListaProducto = (listaproducto) => {
         try {
             const sql = 'UPDATE listasubmodelo SET producto_id = ? , listasubmodelo_id = ? WHERE id = ?';
             const dataListaProducto = [listaproducto.producto_id, listaproducto.listasubmodelo_id, listaproducto.id]
-            mysqlConnection.query(sql, dataListaProducto, (error, result) => {
-                if (error) {
-                    console.log(error.message);
-                    resolve(error)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                resolve(result)
+                try {
+                    connection.query(sql, dataListaProducto, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
         }
     })    
@@ -76,13 +152,30 @@ exports.getListaSubmodeloBySubmodelAndYear = (submodeloId) => {
         try {
             const sql = `SELECT listasubmodelo.id FROM listasubmodelo INNER JOIN submodelo ON submodelo.id = listasubmodelo.submodelo_id WHERE submodelo.id = ${submodeloId};`;
 
-            mysqlConnection.query(sql, (err, results) => {
-                if (err) throw err;
-             
-                if (results.length) {
-                    resolve(JSON.parse(JSON.stringify(results)))
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
             console.error(error.message);
@@ -95,18 +188,34 @@ exports.insertOrUpdate = (id, submodelo_id, fecha) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `INSERT INTO listasubmodelo (id, submodelo_id, fecha) VALUES(${id}, ${submodelo_id},'${fecha}') ON DUPLICATE KEY UPDATE submodelo_id='${submodelo_id}'`;
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) {
-                    console.error(`
-                    ${err.code}
-                    ${err.sql}`)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                resolve(result)
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (err) {
-            reject(err);
+            ;
             console.error(err.message);
-            throw err;
         }
     })
 }

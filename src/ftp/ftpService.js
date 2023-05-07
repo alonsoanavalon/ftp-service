@@ -90,7 +90,6 @@ async function readGeneCodi () {
     
         
     } catch (err) {
-      reject(err);
       console.log(err)
     }
     
@@ -153,7 +152,6 @@ async function readProducto () {
     
         
     } catch (err) {
-      reject(err);
       console.log(err)
     }
     
@@ -185,6 +183,8 @@ async function readAnoFab () {
             }
           }
     
+          } else {
+            console.log(line, "La primera linea traia caracter inesperado")
           }
   
           //Cod.Marca | Cod.Modelo | Cod.Submodelo | Nomb.Sub-Modelo 
@@ -212,7 +212,6 @@ async function readAnoFab () {
     
         
     } catch (err) {
-      reject(err);
       console.log(err)
     }
     
@@ -269,7 +268,6 @@ async function readSubmodelo () {
     
         
     } catch (err) {
-      reject(err);
       console.log(err)
     }
     
@@ -324,7 +322,7 @@ return new Promise((resolve, reject) => {
 
       
   } catch (err) {
-    reject(err)
+
     console.log(err)
   }
 })
@@ -377,7 +375,7 @@ async function readMarca () {
   
         
     } catch (err) {
-      reject(err);
+
       console.log(err)
     }
   })
@@ -412,7 +410,7 @@ async function main() {
       return downloadedFile
     } catch (err) {
       console.log(err);
-      throw err;
+      return err
     } finally {
       client.end();
 
@@ -578,7 +576,7 @@ exports.getUpdatedData = async (path, firstTime, lastDate) => {
 
   } catch(err) {
     console.log(err);
-    throw err;
+    return err;
   }
 
   

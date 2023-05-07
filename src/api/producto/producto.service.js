@@ -64,6 +64,6 @@ exports.getProductosAssociated = (id) => {
     return productoStorageService.getProductosAssociated(id);
 }
 
-exports.insertOrUpdate = (id, nombre, precio, cantidad, precio_local, descripcion, estado) => {
-    return productoStorageService.insertOrUpdate(id, nombre, precio, cantidad, precio_local, descripcion, estado);
+exports.insertOrUpdate = (id, nombre, precio, cantidad, precio_local, descripcion) => {
+    return productoStorageService.insertOrUpdate(id, nombre, precio, cantidad, precio_local, descripcion);
 }

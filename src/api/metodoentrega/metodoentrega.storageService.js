@@ -1,17 +1,37 @@
-const mysqlConnection = require('../../database/database')
+const mysqlPool = require('../../database/database')
 
 exports.getAllMetodoEntrega = () => {
     return new Promise((resolve, reject) => {
         try {
             const sql = 'SELECT * FROM metodoentrega';
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
-                resolve(result)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
+                }
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
-            console.error(error.message)
-            throw error;
+            
+            console.error(error.message);
         }
     })    
 }
@@ -20,15 +40,33 @@ exports.createMetodoEntrega = (metodoEntrega) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = 'INSERT INTO metodoentrega SET ?';
-            mysqlConnection.query(sql, metodoEntrega, (error, result) => {
-                if (error) {
-                    console.log(error.message);
-                    resolve(error)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
                 }
-                resolve(result)
+                try {
+                    connection.query(sql, metodoEntrega, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
+            
             console.error(error.message)
         }
     })    
@@ -38,14 +76,34 @@ exports.getMetodoEntregaById = (id) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `SELECT * FROM metodoentrega WHERE id = ${id}`;
-            mysqlConnection.query(sql, (err, result) => {
-                if (err) throw err;
-                resolve(result)
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                    console.error(err) 
+                    
+                }
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            console.error(err) 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
             })
         } catch (error) {
-            reject(error)
-            console.error(error.message)
-            throw error;
+            
+            console.error(error.message);
         }
     })    
 }
