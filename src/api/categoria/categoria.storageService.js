@@ -110,3 +110,38 @@ exports.updateCategoria = (categoria) => {
         }
     })    
 }
+
+
+
+exports.insertOrUpdate = (id, nombreCategoria) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const sql = `INSERT INTO categoria (id, nombre) VALUES('${id}', '${nombreCategoria}') ON DUPLICATE KEY UPDATE categoria.nombre='${nombreCategoria}';`
+            mysqlPool.getConnection((err, connection) => {
+                if (err) { 
+                    mysqlPool.emit('error', err)
+                }
+                try {
+                    connection.query(sql, (err, result) => {
+                        if (err) { 
+                            mysqlPool.emit('error', err)
+                            
+                        }
+                        connection.release(); // Importante liberar la conexión
+                                if (result) {
+                            resolve(JSON.parse(JSON.stringify(result)))
+                        }
+                    })
+                } catch (error) {
+                    mysqlPool.emit('error', err)
+                    console.error(error);
+                    ;
+                }
+      
+            })
+        } catch (err) {
+            ;
+            console.error(err.message);
+        }
+    })
+}

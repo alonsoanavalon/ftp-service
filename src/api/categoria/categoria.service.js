@@ -15,3 +15,7 @@ exports.getCategoriaById = (id) => {
 exports.updateCategoria = (categoria) => {
     return categoriaStorageService.updateCategoria(categoria);
 }
+
+exports.insertOrUpdate = (id, nombreCategoria) => {
+    return categoriaStorageService.insertOrUpdate(id, nombreCategoria);
+}
