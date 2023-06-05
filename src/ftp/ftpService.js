@@ -1,6 +1,7 @@
 const lineReader = require('line-reader');
 const marcaService = require('../api/marca/marca.service')
 const modeloService = require('../api/modelo/modelo.service')
+const categoriaService = require('../api/categoria/categoria.service')
 const submodeloService = require('../api/submodelo/submodelo.service')
 const listasubmodeloService = require('../api/listasubmodelo/listasubmodelo.service')
 const productoService = require('../api/producto/producto.service')
@@ -43,7 +44,7 @@ async function readGeneCodi () {
       console.log("reading genecodi...")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/GENECODI1.txt', function(line, last) {        
+       lineReader.eachLine('src/ftp/RECIBIR/pruebas/GENECODI1.txt', function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -105,7 +106,7 @@ async function readProducto () {
       console.log("reading producto...")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/PRODUCTO.txt', function(line, last) {        
+       lineReader.eachLine('src/ftp/RECIBIR/pruebas/PRODUCTO.txt', function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -133,7 +134,7 @@ async function readProducto () {
                 const id = objeto['Codigo'];
                 const glosa = `${objeto['Glosa 1']} ${objeto['Glosa 2']} ${objeto['Glosa 3']} ${objeto['Glosa 4']} ${objeto['Glosa 5']} ${objeto['Glosa 6']} ${objeto['Glosa 7']} ${objeto['Glosa 8']} ${objeto['Glosa 9']} ${objeto['Glosa 10']} `
                 if (id) {
-                  const response = await productoService.insertOrUpdate(id, objeto['Descripcion'], objeto['Precio Vta.'], objeto['Stock'], objeto['Prec.Local'], glosa, objeto['Estado Activo,Pasivo']);
+                  const response = await productoService.insertOrUpdate(id, objeto['Descripcion'], objeto['Precio Vta.'], objeto['Stock'], objeto['Prec.Local'], glosa, objeto['Estado Activo,Pasivo'], parseInt(objeto['Familia']));
                   if (response) {
                     resolve (response)
                   }
@@ -167,7 +168,7 @@ async function readAnoFab () {
       console.log("reading anofab..")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/ANOFAB1.txt', function(line, last) {        
+       lineReader.eachLine('src/ftp/RECIBIR/pruebas/ANOFAB1.txt', function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -225,7 +226,7 @@ async function readSubmodelo () {
       console.log("reading submodelo...")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/SUBMODELO1.txt', function(line, last) {        
+       lineReader.eachLine('src/ftp/RECIBIR/pruebas/SUBMODELO1.txt', function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -275,7 +276,64 @@ async function readSubmodelo () {
   
 
 }
+async function readFamilia () {
 
+  return new Promise((resolve, reject) => {
+    try {
+      console.log("reading familia...")
+      let headers = undefined;
+      let arrayDeObjetosGenerados = [];
+       lineReader.eachLine('src/ftp/RECIBIR/pruebas/FAMILIA1.txt', function(line, last) {        
+          if (line.length > 1) {
+            if (headers === undefined) {
+              //seteando lo que son los "key" o la primera linea del txt  /  columnas 
+              headers = line.split('|').map((element) => element.trim())
+            } else {
+              const currentLine = line.split('|')
+              if (currentLine.length === headers.length) {
+                let lineObject = {}
+                currentLine.forEach((element, index) => {
+                  lineObject[headers[index]] = element;
+                })
+                arrayDeObjetosGenerados.push(lineObject)
+            }
+          }
+          //Cod.Famil|  Nombre Familia 
+
+          }
+          if(last) {
+            if (arrayDeObjetosGenerados.length > 1) {
+              arrayDeObjetosGenerados.forEach((objeto) => {
+                const id = parseInt(objeto['Cod.Famil'])
+                const nombreCategoria = objeto['Nombre Familia']
+                if (id) {
+                  resolve(categoriaService.insertOrUpdate(id, nombreCategoria));
+                } else {
+                  console.log(`message: "No existe un id para agregar"`)
+                  return {
+                    message: "No existe un id para agregar"
+                  }
+                }
+              })
+              
+            }
+          }
+        });
+  
+        
+    } catch (err) {
+  
+      console.log(err)
+    }
+  })
+  
+  
+  
+  
+  
+  }
+
+  
 async function readModelo () {
 
 return new Promise((resolve, reject) => {
@@ -283,7 +341,7 @@ return new Promise((resolve, reject) => {
     console.log("reading modelo...")
     let headers = undefined;
     let arrayDeObjetosGenerados = [];
-     lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/MODELO1.txt', function(line, last) {        
+     lineReader.eachLine('src/ftp/RECIBIR/pruebas/MODELO1.txt', function(line, last) {        
         if (line.length > 1) {
           if (headers === undefined) {
             //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -339,7 +397,7 @@ async function readMarca () {
     try {
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/PRUEBAS/MARCA1.txt', function(line, last) {        
+       lineReader.eachLine('src/ftp/RECIBIR/pruebas/MARCA1.txt', function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -427,6 +485,7 @@ async function main() {
             await readProducto()
 /*           } else if (file === 6){ */
             await readGeneCodi()
+            await readFamilia()
 /*           }
   
         }) */
@@ -485,6 +544,8 @@ const config = {
           object['file'] = 5;
         } else if (fileName === 'GENECODI1') {
           object['file'] = 6;
+        } else if (fileName === 'FAMILIA1') {
+          object['file'] = 7;
         }
 
         object['modify_time'] = file.modifyTime
@@ -590,10 +651,10 @@ exports.main  = async () => {
     //La rutina se ejecuta automáticamente al iniciar el servidor
     //Luego comienza una rutina donde cada 1 minuto se verifica y actualiza
     console.log("ejecutando try...")
-    const lastDate = await this.getUpdatedData('RECIBIR/PRUEBAS', true, 0)
+    const lastDate = await this.getUpdatedData('RECIBIR/pruebas', true, 0)
     setTimeout(() => {
       console.log("ejecutando timeout...")
-      this.getUpdatedData('RECIBIR/PRUEBAS', false, lastDate)
+      this.getUpdatedData('RECIBIR/pruebas', false, lastDate)
     }, 60000)
 
   } catch (err) {
