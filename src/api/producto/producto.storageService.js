@@ -338,20 +338,19 @@ exports.substractStock = (quantity, id) => {
     }) 
 }
 
-exports.insertOrUpdate = (id, nombre, precio, cantidad, precio_local, descripcion) => {
+exports.insertOrUpdate = (id, nombre, precio, cantidad, precio_local, descripcion, estado, idFamilia) => {
     return new Promise((resolve, reject) => {
         try {
-            const sql = `INSERT INTO producto (id, codigo, SKU, nombre, precio, cantidad, precio_local, descripcion) VALUES('${id}','${id}','${id}','${nombre}',${precio}, ${cantidad}, ${precio_local}, '${descripcion}') ON DUPLICATE KEY UPDATE codigo='${id}',SKU='${id}', nombre='${nombre}', precio=${precio}, cantidad =${cantidad}, precio_local =${precio_local}, descripcion = '${descripcion}';`
+            const sql = `INSERT INTO producto (id, codigo, SKU, nombre, precio, cantidad, precio_local, descripcion, estado, categoria_id) VALUES('${id}','${id}','${id}','${nombre}',${precio}, ${cantidad}, ${precio_local}, '${descripcion}', '${estado}', ${idFamilia}) ON DUPLICATE KEY UPDATE codigo='${id}',SKU='${id}', nombre='${nombre}', precio=${precio}, cantidad =${cantidad}, precio_local =${precio_local}, descripcion = '${descripcion}', estado='${estado}', categoria_id=${idFamilia};`
             mysqlPool.getConnection((err, connection) => {
                 if (err) { 
                     mysqlPool.emit('error', err)
-                    console.error(err) 
                     
                 }
                 try {
                     connection.query(sql, (err, result) => {
                         if (err) { 
-                            console.error(err) 
+
                             mysqlPool.emit('error', err)
                             
                         }
