@@ -17,7 +17,14 @@ let mysqlPool = mysql.createPool({
 });
 
 mysqlPool.on('error', function (err) {
-    console.log('Error en la conexión a la base de datos: ', err);
+
+  if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+    console.warn('Error en referencia ', err.sqlMessage);
+  } else {
+    console.warn('Error desconocido', err.sqlMessage)
+  }
+    
+
     if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNREFUSED' ) {
         console.log('Reconectando a la base de datos...');
 
@@ -52,13 +59,10 @@ mysqlPool.on('error', function (err) {
 
             connection.release();
         });
-    } else {
-
-        
-        console.log('Error desconocido en la conexión a la base de datos. No se reiniciará la conexión.');
         console.log('***** BDD REINICIADA *****');
         logError(err)
-    }
+
+    } 
 });
 
 
