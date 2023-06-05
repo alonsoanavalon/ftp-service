@@ -119,14 +119,11 @@ exports.insertOrUpdate = (id, id_modelo, nombre) => {
             const sql = `INSERT INTO submodelo (id, modelo_id, nombre) VALUES(${id}, ${id_modelo}, '${nombre}') ON DUPLICATE KEY UPDATE nombre='${nombre}';`;
             mysqlPool.getConnection((err, connection) => {
                 if (err) { 
-                    mysqlPool.emit('error', err)
-                    console.error(err) 
-                    
+                    mysqlPool.emit('error', err) 
                 }
                 try {
                     connection.query(sql, (err, result) => {
                         if (err) { 
-                            console.error(err) 
                             mysqlPool.emit('error', err)
                             
                         }
@@ -141,7 +138,6 @@ exports.insertOrUpdate = (id, id_modelo, nombre) => {
                 } catch (error) {
                     mysqlPool.emit('error', err)
                     console.error(error);
-                    ;
                 }
       
             })

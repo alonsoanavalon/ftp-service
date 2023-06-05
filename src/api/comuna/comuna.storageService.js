@@ -133,9 +133,8 @@ exports.updateCliente = (cliente) => {
                         }
                     })
                 } catch (error) {
-                    mysqlPool.emit('error', err)
+                    mysqlPool.emit('error', err);
                     console.error(error);
-                    ;
                 }
       
             })

@@ -191,13 +191,11 @@ exports.insertOrUpdate = (id, submodelo_id, fecha) => {
             mysqlPool.getConnection((err, connection) => {
                 if (err) { 
                     mysqlPool.emit('error', err)
-                    console.error(err) 
                     
                 }
                 try {
                     connection.query(sql, (err, result) => {
                         if (err) { 
-                            console.error(err) 
                             mysqlPool.emit('error', err)
                             
                         }
