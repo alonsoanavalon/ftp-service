@@ -481,11 +481,12 @@ async function main() {
             await readSubmodelo() 
 /*           } else if (file === 4) { */
             await readAnoFab()
+            await readFamilia()
 /*           } else if (file === 5) { */
             await readProducto()
 /*           } else if (file === 6){ */
             await readGeneCodi()
-            await readFamilia()
+
 /*           }
   
         }) */
