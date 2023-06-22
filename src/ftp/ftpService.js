@@ -110,9 +110,9 @@ async function readProducto () {
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
-              headers = line.split(' | ').map((element) => element.trim())
+              headers = line.trim().split('|').map((element) => element.trim())
             } else {
-              const currentLine = line.split('|')
+              const currentLine = line.trim().split('|')
               if (currentLine.length === headers.length) {
                 let lineObject = {}
                 currentLine.forEach((element, index) => {
