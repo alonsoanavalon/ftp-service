@@ -355,8 +355,10 @@ exports.insertOrUpdate = (id, nombre, precio, cantidad, precio_local, descripcio
                             
                         }
                         connection.release(); // Importante liberar la conexión
-                                if (result) {
+                        if (result) {
                             resolve(JSON.parse(JSON.stringify(result)))
+                        }else {
+                            resolve(false)
                         }
                     })
                 } catch (error) {

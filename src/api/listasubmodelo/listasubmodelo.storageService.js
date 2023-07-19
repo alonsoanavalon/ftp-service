@@ -188,10 +188,10 @@ exports.insertOrUpdate = (id, submodelo_id, fecha) => {
     return new Promise((resolve, reject) => {
         try {
             const sql = `INSERT INTO listasubmodelo (id, submodelo_id, fecha) VALUES(${id}, ${submodelo_id},'${fecha}') ON DUPLICATE KEY UPDATE submodelo_id='${submodelo_id}'`;
-            mysqlPool.getConnection((err, connection) => {
+            return mysqlPool.getConnection((err, connection) => {
                 if (err) { 
                     mysqlPool.emit('error', err)
-                    
+                    resolve(err)
                 }
                 try {
                     connection.query(sql, (err, result) => {
@@ -200,8 +200,10 @@ exports.insertOrUpdate = (id, submodelo_id, fecha) => {
                             
                         }
                         connection.release(); // Importante liberar la conexión
-                                if (result) {
+                        if (result) {
                             resolve(JSON.parse(JSON.stringify(result)))
+                        } else {
+                            resolve(false)
                         }
                     })
                 } catch (error) {

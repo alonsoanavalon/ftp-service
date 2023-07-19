@@ -167,6 +167,8 @@ exports.insertOrUpdate = (id, producto_id, listasubmodelo_id) => {
                         connection.release(); // Importante liberar la conexión
                                 if (result) {
                             resolve(JSON.parse(JSON.stringify(result)))
+                        }else {
+                            resolve(false)
                         }
                     })
                 } catch (error) {

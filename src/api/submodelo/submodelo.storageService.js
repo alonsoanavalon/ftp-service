@@ -125,13 +125,15 @@ exports.insertOrUpdate = (id, id_modelo, nombre) => {
                     connection.query(sql, (err, result) => {
                         if (err) { 
                             mysqlPool.emit('error', err)
+                            resolve(false)
                             
                         }
                         connection.release(); // Importante liberar la conexión
                         if (result) {
-                                    if (result) {
                             resolve(JSON.parse(JSON.stringify(result)))
-                        }
+
+                        } else {
+                            resolve(false)                 
                         }
     
                     })

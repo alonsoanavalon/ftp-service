@@ -93,6 +93,8 @@ exports.getListaPedidoById = (id) => {
                         connection.release(); // Importante liberar la conexión
                                 if (result) {
                             resolve(JSON.parse(JSON.stringify(result)))
+                        }else {
+                            resolve(false)
                         }
                     })
                 } catch (error) {
