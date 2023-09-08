@@ -511,6 +511,19 @@ async function main() {
       console.log(err);
       return err
     } finally {
+      console.log(dst)
+      // await client.delete('RECIBIR/pruebas/PRODUCTO.txt')
+      const listaArchivos = await client.list('RECIBIR/pruebas');
+      listaArchivos?.forEach(async (archivo) => {
+          console.log(`Archivo eliminado: ${archivo.name}`);
+         client.delete(`${src}/${archivo.name}`);
+
+      })
+
+      const res = await Promise.allSettled(listaArchivos);
+      console.log(res)
+
+      
       client.end();
 
 /*         modifiedFiles.forEach(async (file) => { */
@@ -614,11 +627,9 @@ const config = {
 
 }
 
-exports.getUpdatedData = async (path, firstTime, lastDate) => {
+exports.getUpdatedData = async (path, firstTime) => {
 
   try {
-  let lastGlobalDate = lastDate;
-
 
   if (firstTime) {
 
@@ -626,51 +637,38 @@ exports.getUpdatedData = async (path, firstTime, lastDate) => {
     let reviewResponse;
 
     reviewResponse = await this.list(path)
+
+    if (reviewResponse) {
+
   
-    if (reviewResponse.datesArray.length > 0) {
-      reviewResponse.datesArray.forEach((date) => {
-        if (date.modify_time > lastGlobalDate) {
-          modifiedFiles.push(date.file)
-        } 
-      })
-    } 
+      console.log("leyendo")
 
- 
-    if (reviewResponse.lastDate > lastGlobalDate) {
-      console.log(`La date local es mayor a la global, la reemplazaremos`)
-      lastGlobalDate = reviewResponse.lastDate
-      this.read(path, modifiedFiles)
+        this.read(path, modifiedFiles)
+   
+  
+      return reviewResponse.lastDate
     } else {
-      console.log(`La date local es menor a la global no hacemos nada`)
-      console.log(`Global: ${new Date(lastGlobalDate)} - Local:${new Date(reviewResponse.lastDate)}`)
-
+      console.log("no hay archivos")
+      return;
     }
-
-    return reviewResponse.lastDate
+  
+  
   } else {
     setInterval( async () => {
       let modifiedFiles = [];
       let reviewResponse;
       reviewResponse = await this.list(path)
   
-      if (reviewResponse.datesArray.length > 0) {
-        reviewResponse.datesArray.forEach((date) => {
-          if (date.modify_time > lastGlobalDate) {
-            modifiedFiles.push(date.file)
-          } 
-        })
-      } 
-  
-   
-      if (reviewResponse.lastDate > lastGlobalDate) {
-        console.log(`La date local es mayor a la global, la reemplazaremos`)
-        lastGlobalDate = reviewResponse.lastDate
-        this.read(path, modifiedFiles)
+      if (reviewResponse) {
+        console.log("leyendo 2")
+
+          this.read(path, modifiedFiles)
+     
       } else {
-        console.log(`La date local es menor a la global no hacemos nada`)
-        console.log(`Global: ${new Date(lastGlobalDate)} - Local:${new Date(reviewResponse.lastDate)}`)
-  
+        console.log("no hay archivos 2")
+        return;
       }
+      
   
     }, 60000)
 
@@ -693,10 +691,9 @@ exports.main  = async () => {
     //La rutina se ejecuta automáticamente al iniciar el servidor
     //Luego comienza una rutina donde cada 1 minuto se verifica y actualiza
     console.log("ejecutando try...")
-    const lastDate = await this.getUpdatedData('RECIBIR/pruebas', true, 0)
     setTimeout(() => {
       console.log("ejecutando timeout...")
-      this.getUpdatedData('RECIBIR/pruebas', false, lastDate)
+      this.getUpdatedData('RECIBIR/pruebas', false)
     }, process.env.CRON)
 
   } catch (err) {
