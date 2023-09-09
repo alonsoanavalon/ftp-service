@@ -544,11 +544,11 @@ async function main() {
         genecodi: genecodi.length > 0 && genecodi[0].name
       }
 
-      listaArchivos?.forEach(async (archivo) => {
-        console.log(`Archivo eliminado: ${archivo.name}`);
-       client.delete(`${src}/${archivo.name}`);
+    //   listaArchivos?.forEach(async (archivo) => {
+    //     console.log(`Archivo eliminado: ${archivo.name}`);
+    //    client.delete(`${src}/${archivo.name}`);
 
-    })
+    // })
 
       const res = await Promise.allSettled(listaArchivos);
       console.log(res)
@@ -687,6 +687,7 @@ exports.getUpdatedData = async (path, firstTime, lastDate) => {
 
     reviewResponse = await this.list(path)
 
+    console.log(lastGlobalDate, "aca")
     if (reviewResponse) {
       if (reviewResponse.datesArray.length > 0) {
         reviewResponse.datesArray.forEach((date) => {
@@ -769,7 +770,7 @@ exports.main  = async () => {
     setTimeout(() => {
       console.log("ejecutando timeout...")
       this.getUpdatedData('RECIBIR/pruebas', false, lastDate)
-    }, process.env.CRON)
+    }, 30000)
 
   } catch (err) {
     console.log(err)
