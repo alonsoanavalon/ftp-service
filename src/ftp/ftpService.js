@@ -37,14 +37,14 @@ function cleanZeros (numbers) {
 }
 
 
-async function readGeneCodi () {
+async function readGeneCodi (fileName) {
 
   return new Promise((resolve, reject) => {
     try {
       console.log("reading genecodi...")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/pruebas/GENECODI1.txt', async function(line, last) {        
+       lineReader.eachLine(`src/ftp/RECIBIR/pruebas/${fileName}`, async function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -106,12 +106,12 @@ async function readGeneCodi () {
 
   }
 
-async function readProducto () {
+async function readProducto (fileName) {
   return new Promise((resolve, reject) => {
     try {
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/pruebas/PRODUCTO.txt', async function(line, last) {        
+       lineReader.eachLine(`src/ftp/RECIBIR/pruebas/${fileName}`, async function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -169,14 +169,14 @@ async function readProducto () {
 
   }
 
-async function readAnoFab () {
+async function readAnoFab (fileName) {
 
   return new Promise((resolve, reject) => {
     try {
       console.log("reading anofab..")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/pruebas/ANOFAB1.txt', async function(line, last) {        
+       lineReader.eachLine(`src/ftp/RECIBIR/pruebas/${fileName}`, async function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -233,14 +233,14 @@ async function readAnoFab () {
   })
   }
 
-async function readSubmodelo () {
+async function readSubmodelo (fileName) {
 
   return new Promise((resolve, reject) => {
     try {
       console.log("reading submodelo...")
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/pruebas/SUBMODELO1.txt', async function(line, last) {        
+       lineReader.eachLine(`src/ftp/RECIBIR/pruebas/${fileName}`, async function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -299,13 +299,13 @@ async function readSubmodelo () {
   
 
 }
-async function readFamilia () {
+async function readFamilia (fileName) {
 
   return new Promise((resolve, reject) => {
     try {
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/pruebas/FAMILIA1.txt', async function(line, last) {        
+       lineReader.eachLine(`src/ftp/RECIBIR/pruebas/${fileName}`, async function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -363,14 +363,14 @@ async function readFamilia () {
   }
 
   
-async function readModelo () {
+async function readModelo (fileName) {
 
 return new Promise((resolve, reject) => {
   try {
     console.log("reading modelo...")
     let headers = undefined;
     let arrayDeObjetosGenerados = [];
-     lineReader.eachLine('src/ftp/RECIBIR/pruebas/MODELO1.txt', async function(line, last) {        
+     lineReader.eachLine(`src/ftp/RECIBIR/pruebas/${fileName}`, async function(line, last) {        
         if (line.length > 1) {
           if (headers === undefined) {
             //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -428,13 +428,13 @@ return new Promise((resolve, reject) => {
 
 }
 
-async function readMarca () {
+async function readMarca (fileName) {
   return new Promise((resolve, reject) => {
     console.log("reading marca...")
     try {
       let headers = undefined;
       let arrayDeObjetosGenerados = [];
-       lineReader.eachLine('src/ftp/RECIBIR/pruebas/MARCA1.txt', async function(line, last) {        
+       lineReader.eachLine(`src/ftp/RECIBIR/pruebas/${fileName}`, async function(line, last) {        
           if (line.length > 1) {
             if (headers === undefined) {
               //seteando lo que son los "key" o la primera linea del txt  /  columnas 
@@ -514,11 +514,41 @@ async function main() {
       console.log(dst)
       // await client.delete('RECIBIR/pruebas/PRODUCTO.txt')
       const listaArchivos = await client.list('RECIBIR/pruebas');
-      listaArchivos?.forEach(async (archivo) => {
-          console.log(`Archivo eliminado: ${archivo.name}`);
-         client.delete(`${src}/${archivo.name}`);
 
-      })
+
+      const enumFiles = {
+        MARCA: 'MA',
+        MODELO: 'MO',
+        SUBMODELO: 'SU',
+        ANOFAB: 'AN',
+        PRODUCTO: 'PR',
+        GENECODI: 'GE',
+        FAMILIA: 'FA'
+      }
+
+      const family = listaArchivos.filter((file) => file.name.includes(enumFiles.FAMILIA))
+      const marca = listaArchivos.filter((file) => file.name.includes(enumFiles.MARCA))
+      const modelo = listaArchivos.filter((file) => file.name.includes(enumFiles.MODELO))
+      const submodelo = listaArchivos.filter((file) => file.name.includes(enumFiles.SUBMODELO))
+      const anofab = listaArchivos.filter((file) => file.name.includes(enumFiles.ANOFAB))
+      const producto = listaArchivos.filter((file) => file.name.includes(enumFiles.PRODUCTO))
+      const genecodi = listaArchivos.filter((file) => file.name.includes(enumFiles.GENECODI))
+
+      const fileNames = {
+        family: family.length > 0 && family[0].name,
+        marca: marca.length > 0 && marca[0].name,
+        modelo: modelo.length > 0 && modelo[0].name,
+        submodelo: submodelo.length > 0 && submodelo[0].name,
+        anofab: anofab.length > 0 && anofab[0].name,
+        producto: producto.length > 0 && producto[0].name,
+        genecodi: genecodi.length > 0 && genecodi[0].name
+      }
+
+      listaArchivos?.forEach(async (archivo) => {
+        console.log(`Archivo eliminado: ${archivo.name}`);
+       client.delete(`${src}/${archivo.name}`);
+
+    })
 
       const res = await Promise.allSettled(listaArchivos);
       console.log(res)
@@ -528,18 +558,35 @@ async function main() {
 
 /*         modifiedFiles.forEach(async (file) => { */
 /*           if (file === 1) { */
-            await readMarca()
-/*           } else if (file === 2) { */
-            await readModelo()
-/*           } else if (file === 3) { */
-            await readSubmodelo() 
-/*           } else if (file === 4) { */
-            await readAnoFab()
-            await readFamilia()
-/*           } else if (file === 5) { */
-            await readProducto()
-/*           } else if (file === 6){ */
-            await readGeneCodi()
+            if (fileNames.marca) {
+              await readMarca(fileNames.marca)
+            }
+
+            if (fileNames.modelo) {
+              await readModelo(fileNames.modelo)
+            }
+
+            if (fileNames.submodelo) {
+              await readSubmodelo(fileNames.submodelo)
+            }
+
+            if (fileNames.anofab) {
+              await readAnoFab(fileNames.anofab)
+            }
+
+            if(fileNames.family) {
+              await readFamilia(fileNames.family)
+            }
+
+            if(fileNames.producto) {
+              await readProducto(fileNames.producto)
+            }
+
+            if (fileNames.genecodi) {
+              await readGeneCodi(fileNames.genecodi)
+            }
+
+
 
 /*           }
   
@@ -627,9 +674,11 @@ const config = {
 
 }
 
-exports.getUpdatedData = async (path, firstTime) => {
+exports.getUpdatedData = async (path, firstTime, lastDate) => {
 
   try {
+  let lastGlobalDate = lastDate;
+
 
   if (firstTime) {
 
@@ -639,12 +688,24 @@ exports.getUpdatedData = async (path, firstTime) => {
     reviewResponse = await this.list(path)
 
     if (reviewResponse) {
-
+      if (reviewResponse.datesArray.length > 0) {
+        reviewResponse.datesArray.forEach((date) => {
+          if (date.modify_time > lastGlobalDate) {
+            modifiedFiles.push(date.file)
+          } 
+        })
+      } 
   
-      console.log("leyendo")
-
-        this.read(path, modifiedFiles)
    
+      if (reviewResponse.lastDate > lastGlobalDate) {
+        console.log(`La date local es mayor a la global, la reemplazaremos`)
+        lastGlobalDate = reviewResponse.lastDate
+        this.read(path, modifiedFiles)
+      } else {
+        console.log(`La date local es menor a la global no hacemos nada`)
+        console.log(`Global: ${new Date(lastGlobalDate)} - Local:${new Date(reviewResponse.lastDate)}`)
+  
+      }
   
       return reviewResponse.lastDate
     } else {
@@ -660,13 +721,26 @@ exports.getUpdatedData = async (path, firstTime) => {
       reviewResponse = await this.list(path)
   
       if (reviewResponse) {
-        console.log("leyendo 2")
-
-          this.read(path, modifiedFiles)
+        if (reviewResponse.datesArray.length > 0) {
+          reviewResponse.datesArray.forEach((date) => {
+            if (date.modify_time > lastGlobalDate) {
+              modifiedFiles.push(date.file)
+            } 
+          })
+        } 
+    
      
+        if (reviewResponse.lastDate > lastGlobalDate) {
+          console.log(`La date local es mayor a la global, la reemplazaremos`)
+          lastGlobalDate = reviewResponse.lastDate
+          this.read(path, modifiedFiles)
+        } else {
+          console.log(`La date local es menor a la global no hacemos nada`)
+          console.log(`Global: ${new Date(lastGlobalDate)} - Local:${new Date(reviewResponse.lastDate)}`)
+    
+        }
       } else {
-        console.log("no hay archivos 2")
-        return;
+        console.log("no hay archivos")
       }
       
   
@@ -691,10 +765,11 @@ exports.main  = async () => {
     //La rutina se ejecuta automáticamente al iniciar el servidor
     //Luego comienza una rutina donde cada 1 minuto se verifica y actualiza
     console.log("ejecutando try...")
+    const lastDate = await this.getUpdatedData('RECIBIR/pruebas', true, 0)
     setTimeout(() => {
       console.log("ejecutando timeout...")
-      this.getUpdatedData('RECIBIR/pruebas', false)
-    }, 3600000)
+      this.getUpdatedData('RECIBIR/pruebas', false, lastDate)
+    }, process.env.CRON)
 
   } catch (err) {
     console.log(err)
