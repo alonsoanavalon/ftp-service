@@ -698,15 +698,9 @@ exports.getUpdatedData = async (path, firstTime, lastDate) => {
       } 
   
    
-      if (reviewResponse.lastDate > lastGlobalDate) {
-        console.log(`La date local es mayor a la global, la reemplazaremos`)
-        lastGlobalDate = reviewResponse.lastDate
+
         this.read(path, modifiedFiles)
-      } else {
-        console.log(`La date local es menor a la global no hacemos nada`)
-        console.log(`Global: ${new Date(lastGlobalDate ? lastGlobalDate : 0)} - Local:${new Date(reviewResponse.lastDate)}`)
-  
-      }
+
   
       return reviewResponse.lastDate
     } else {
@@ -731,15 +725,9 @@ exports.getUpdatedData = async (path, firstTime, lastDate) => {
         } 
     
      
-        if (reviewResponse.lastDate > lastGlobalDate) {
-          console.log(`La date local es mayor a la global, la reemplazaremos`)
-          lastGlobalDate = reviewResponse.lastDate
+
           this.read(path, modifiedFiles)
-        } else {
-          console.log(`La date local es menor a la global no hacemos nada`)
-          console.log(`Global: ${new Date(lastGlobalDate ? lastGlobalDate : 0)} - Local:${new Date(reviewResponse.lastDate)}`)
-    
-        }
+      
       } else {
         console.log("no hay archivos")
       }
