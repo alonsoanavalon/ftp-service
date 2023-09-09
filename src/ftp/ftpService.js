@@ -544,11 +544,11 @@ async function main() {
         genecodi: genecodi.length > 0 && genecodi[0].name
       }
 
-    //   listaArchivos?.forEach(async (archivo) => {
-    //     console.log(`Archivo eliminado: ${archivo.name}`);
-    //    client.delete(`${src}/${archivo.name}`);
+      listaArchivos?.forEach(async (archivo) => {
+        console.log(`Archivo eliminado: ${archivo.name}`);
+       client.delete(`${src}/${archivo.name}`);
 
-    // })
+    })
 
       const res = await Promise.allSettled(listaArchivos);
       console.log(res)
@@ -770,7 +770,7 @@ exports.main  = async () => {
     setTimeout(() => {
       console.log("ejecutando timeout...")
       this.getUpdatedData('RECIBIR/pruebas', false, lastDate)
-    }, 30000)
+    }, 120000)
 
   } catch (err) {
     console.log(err)
