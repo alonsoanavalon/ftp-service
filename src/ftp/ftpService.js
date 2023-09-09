@@ -694,7 +694,7 @@ exports.main  = async () => {
     setTimeout(() => {
       console.log("ejecutando timeout...")
       this.getUpdatedData('RECIBIR/pruebas', false)
-    }, process.env.CRON)
+    }, 3600000)
 
   } catch (err) {
     console.log(err)
