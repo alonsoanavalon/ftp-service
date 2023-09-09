@@ -704,7 +704,7 @@ exports.getUpdatedData = async (path, firstTime, lastDate) => {
         this.read(path, modifiedFiles)
       } else {
         console.log(`La date local es menor a la global no hacemos nada`)
-        console.log(`Global: ${new Date(lastGlobalDate)} - Local:${new Date(reviewResponse.lastDate)}`)
+        console.log(`Global: ${new Date(lastGlobalDate ? lastGlobalDate : 0)} - Local:${new Date(reviewResponse.lastDate)}`)
   
       }
   
@@ -737,7 +737,7 @@ exports.getUpdatedData = async (path, firstTime, lastDate) => {
           this.read(path, modifiedFiles)
         } else {
           console.log(`La date local es menor a la global no hacemos nada`)
-          console.log(`Global: ${new Date(lastGlobalDate)} - Local:${new Date(reviewResponse.lastDate)}`)
+          console.log(`Global: ${new Date(lastGlobalDate ? lastGlobalDate : 0)} - Local:${new Date(reviewResponse.lastDate)}`)
     
         }
       } else {
